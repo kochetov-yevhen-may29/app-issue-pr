@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/validationSchemas";
-import { boolean, z } from "zod";
+import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
 
@@ -28,6 +28,18 @@ const NewIssuePage = () => {
   const [isSubmiting, setSubmiting] = React.useState(false);
   const router = useRouter();
 
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setSubmiting(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+      setSubmiting(false);
+    } catch (error) {
+      setSubmiting(false);
+      setError("An unexpected error occurred.");
+    }
+  });
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -35,20 +47,7 @@ const NewIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setSubmiting(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-            setSubmiting(false);
-          } catch (error) {
-            setSubmiting(false);
-            setError("An unexpected error occurred.");
-          }
-        })}
-      >
+      <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
