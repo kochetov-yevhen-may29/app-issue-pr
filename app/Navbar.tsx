@@ -12,7 +12,7 @@ const Navbar = () => {
     { label: "Dashboard", href: "/" },
     { label: "Issues", href: "/issues" },
   ];
-  console.log(currentPath);
+
   return (
     <nav className="flex space-x-6 items-center h-14 mb-5 px-5 border-b">
       <Link href="/">
